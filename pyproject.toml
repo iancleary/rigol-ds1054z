@@ -8,6 +8,7 @@ dependencies = [
     "matplotlib>=3.10.6",
     "numpy>=2.3.3",
     "pandas>=2.3.2",
+    "psutil>=7.0.0",
     "pyvisa>=1.15.0",
     "tqdm>=4.67.1",
 ]

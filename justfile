@@ -4,6 +4,9 @@ help:
 run:
   uv run main.py
 
+debug:
+  uv run debug.py
+
 install:
   uv install
 

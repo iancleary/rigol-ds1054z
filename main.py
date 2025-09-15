@@ -7,6 +7,8 @@ import time
 
 
 def main():
+    print("\n\n\n")
+
     print("Hello from rigol!")
 
     rm = pyvisa.ResourceManager()
@@ -16,9 +18,20 @@ def main():
     # thus the first resource on the list is our oscilloscope.
     # You can see all connected and available local devices calling
     #
-    print(rm.list_resources())
-    #
-    osc_resource = rm.open_resource(rm.list_resources()[0])
+    # print(rm.list_resources())
+    # #
+
+    # USB_ADDRESS_CONNECT_STRING = rm.list_resources()[0]
+    # USB_ADDRESS_CONNECT_STRING = "USB0::0x1AB1::0x4CE::DS1Z00000001::INSTR"
+    # print(f"Connecting to oscilloscope at address {USB_ADDRESS_CONNECT_STRING}")
+
+    # IP_ADDRESS = "172.18.8.39"
+    IP_ADDRESS = "169.254.209.0"
+    IP_ADDRESS_CONNECT_STRING = f"TCPIP0::{IP_ADDRESS}::INSTR"
+
+    print(f"Connecting to oscilloscope at address {IP_ADDRESS_CONNECT_STRING}")
+
+    osc_resource = rm.open_resource(IP_ADDRESS_CONNECT_STRING)
 
     osc = Rigol1000z.Rigol1000z(osc_resource)
     print(osc)
@@ -49,6 +62,7 @@ def main():
     # data = channel1.parse_waveform_data(raw_data)
     # print(raw_data)
 
+    print("\n\n\n")
     info = channel1.get_data_premable()
     print(info)
 
@@ -64,13 +78,12 @@ def main():
     print("Taking screenshot")
     osc.get_screenshot("screenshot.png", "png")
 
-    print("Stopping oscilloscope")
-    osc.stop()
-
     trace = pd.DataFrame({"time": t, "voltage": v})
     print(trace)
     trace.plot(x="time", y="voltage")
     plt.savefig("channel1.png")
+
+    print("\n\n\n")
 
     # Capture the data sets from channels 1--4 and=
     # write the data sets to their own file.
