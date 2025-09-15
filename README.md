@@ -33,7 +33,7 @@ import time
 
 rm = pyvisa.ResourceManager()
 
-IP_ADDRESS = "169.254.209.0"
+IP_ADDRESS = "169.254.209.1"
 IP_ADDRESS_CONNECT_STRING = f"TCPIP0::{IP_ADDRESS}::INSTR"
 
 inst = rm.open_resource(f"{IP_ADDRESS_CONNECT_STRING}")

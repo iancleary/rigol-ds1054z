@@ -4,8 +4,11 @@ help:
 run:
   uv run main.py
 
-debug:
-  uv run debug.py
+ip:
+  uv run examples/ip.py
+
+usb:
+  uv run examples/usb.py
 
 install:
   uv install
