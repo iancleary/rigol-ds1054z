@@ -3,7 +3,7 @@ import time
 
 rm = pyvisa.ResourceManager()
 
-print(rm.list_resources())
+# print(rm.list_resources())
 
 # IP_ADDRESS = "172.18.8.39"
 IP_ADDRESS = "169.254.209.0"
