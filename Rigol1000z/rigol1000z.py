@@ -1,10 +1,49 @@
+import importlib.util
 import os
+import sys
+
 import numpy as _np
-import tqdm as _tqdm
-import pyvisa as _visa
 
 
-class _Rigol1000zChannel:
+# Require pyvisa to be installed without try catch
+PYVISA = "pyvisa"
+PYVISA_INSTALLED = False
+
+if PYVISA in sys.modules:
+    # print(f"{PYVISA!r} already in sys.modules")
+    pass  # no debug print needed, they know its there by the lack of this message
+elif (spec := importlib.util.find_spec(PYVISA)) is not None:
+    # If you choose to perform the actual import ...
+    pass  # not needed here, since pyvisa resource is passed to the class
+else:
+    print(f"can't find the {PYVISA!r} module, raising ImportError")
+    raise ImportError("pyvisa is required to use this module.")
+
+
+# use tqdm for progress bars if installed.
+# This is optional, so no ImportError is raised if not found.
+# This is useful when monitoring the command line progress of large trace collection
+# However, this does assume this is being run in a terminal at all.
+# This would not be useful in a GUI application, for example COSMOS.
+#        https://openc3.com/
+
+TQDM = "tqdm"
+TQDM_INSTALLED = False
+
+if TQDM in sys.modules:
+    print(f"{TQDM!r} already in sys.modules")
+elif (spec := importlib.util.find_spec(TQDM)) is not None:
+    # If you choose to perform the actual import ...
+
+    import tqdm as _tqdm  # type: ignore[import]
+
+    print(f"{TQDM!r} has been imported as _{TQDM}")
+    TQDM_INSTALLED = True
+else:
+    print(f"can't find the {TQDM!r} module, no progress bar will be shown")
+
+
+class _Channel:
     """
     Handles the channels configuration (vertical axis).
     """
@@ -161,21 +200,39 @@ class _Rigol1000zChannel:
         last_block_pts = info["points"] % max_num_pts
 
         datas = []
-        for i in _tqdm.tqdm(range(num_blocks + 1), ncols=60):
-            if i < num_blocks:
-                self._osc.visa_write(":wav:star %i" % (1 + i * 250000))
-                self._osc.visa_write(":wav:stop %i" % (250000 * (i + 1)))
-            else:
-                if last_block_pts:
-                    self._osc.visa_write(":wav:star %i" % (1 + num_blocks * 250000))
-                    self._osc.visa_write(
-                        ":wav:stop %i" % (num_blocks * 250000 + last_block_pts)
-                    )
+
+        if TQDM_INSTALLED:
+            for i in _tqdm.tqdm(range(num_blocks + 1), ncols=60):
+                if i < num_blocks:
+                    self._osc.visa_write(":wav:star %i" % (1 + i * 250000))
+                    self._osc.visa_write(":wav:stop %i" % (250000 * (i + 1)))
                 else:
-                    break
-            data = self._osc.visa_ask_raw(":wav:data?")[11:]
-            data = _np.frombuffer(data, "B")
-            datas.append(data)
+                    if last_block_pts:
+                        self._osc.visa_write(":wav:star %i" % (1 + num_blocks * 250000))
+                        self._osc.visa_write(
+                            ":wav:stop %i" % (num_blocks * 250000 + last_block_pts)
+                        )
+                    else:
+                        break
+                data = self._osc.visa_ask_raw(":wav:data?")[11:]
+                data = _np.frombuffer(data, "B")
+                datas.append(data)
+        else:
+            for i in range(num_blocks + 1):
+                if i < num_blocks:
+                    self._osc.visa_write(":wav:star %i" % (1 + i * 250000))
+                    self._osc.visa_write(":wav:stop %i" % (250000 * (i + 1)))
+                else:
+                    if last_block_pts:
+                        self._osc.visa_write(":wav:star %i" % (1 + num_blocks * 250000))
+                        self._osc.visa_write(
+                            ":wav:stop %i" % (num_blocks * 250000 + last_block_pts)
+                        )
+                    else:
+                        break
+                data = self._osc.visa_ask_raw(":wav:data?")[11:]
+                data = _np.frombuffer(data, "B")
+                datas.append(data)
 
         datas = _np.concatenate(datas)
         v = (datas - info["yorigin"] - info["yreference"]) * info["yincrement"]
@@ -208,7 +265,7 @@ class _Rigol1000zChannel:
         return t, v
 
 
-class _Rigol1000zTrigger:
+class _Trigger:
     """
     Handles the trigger configuration.
     """
@@ -231,7 +288,7 @@ class _Rigol1000zTrigger:
         return self.get_trigger_holdoff_s()
 
 
-class _Rigol1000zTimebase:
+class _Timebase:
     """
     Handles the timebase configuration (horizontal axis).
     """
@@ -275,7 +332,7 @@ class _Rigol1000zTimebase:
         return self.get_timebase_offset_s()
 
 
-class Rigol1000z:
+class Oscilloscope:
     """
     Rigol DS1000z series oscilloscope driver.
 
@@ -284,18 +341,18 @@ class Rigol1000z:
     to index 1 (not 0).
 
     Attributes:
-        trigger (`_Rigol1000zTrigger`): Trigger object containing functions
+        trigger (`_Trigger`): Trigger object containing functions
             related to the oscilloscope trigger.
-        timebase (`_Rigol1000zTimebase`): Timebase object containing functions
+        timebase (`_Timebase`): Timebase object containing functions
             related to the oscilloscope timebase.
     """
 
     def __init__(self, visa_resource):
         self.visa_resource = visa_resource
 
-        self._channels = [_Rigol1000zChannel(c, self) for c in range(1, 5)]
-        self.trigger = _Rigol1000zTrigger(self)
-        self.timebase = _Rigol1000zTimebase(self)
+        self._channels = [_Channel(c, self) for c in range(1, 5)]
+        self.trigger = _Trigger(self)
+        self.timebase = _Timebase(self)
 
     def __getitem__(self, i):
         assert 1 <= i <= 4, "Not a valid channel."
@@ -411,12 +468,12 @@ class Rigol1000z:
     def selected_channel(self):
         return self.visa_ask(":MEAS:SOUR?")
 
-    def get_screenshot(self, filename=None, format="png"):
+    def get_screenshot(self, fileTQDM=None, format="png"):
         """
         Downloads a screenshot from the oscilloscope.
 
         Args:
-            filename (str): The name of the image file.  The appropriate
+            fileTQDM (str): The TQDM of the image file.  The appropriate
                 extension should be included (i.e. jpg, png, bmp or tif).
             type (str): The format image that should be downloaded.  Options
                 are 'jpeg, 'png', 'bmp8', 'bmp24' and 'tiff'.  It appears that
@@ -434,12 +491,12 @@ class Rigol1000z:
 
         self.visa_resource.timeout = oldTimeout
 
-        if filename:
+        if fileTQDM:
             try:
-                os.remove(filename)
+                os.remove(fileTQDM)
             except OSError:
                 pass
-            with open(filename, "wb") as fs:
+            with open(fileTQDM, "wb") as fs:
                 fs.write(raw_img)
 
         return raw_img
