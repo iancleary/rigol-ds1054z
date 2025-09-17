@@ -1,6 +1,25 @@
 # rigol-ds1054z
 
-Python VISA (USB and Ethernet) library to control Rigol DS1000z series oscilloscopes. Continuation of https://github.com/jeanyvesb9/Rigol1000z (as of 2025-09-15, that repo is no longer maintained).
+Python VISA (USB and Ethernet) library to control Rigol DS1000z series oscilloscopes.
+
+## Authors and License
+
+I first discovered [jeanyvesb9/Rigol1000z](https://github.com/jeanyvesb9/Rigol1000z/tree/9834594d181b6a403af726d37e16468800e4442e) (as of 2025-09-15, that repo is no longer maintained). I edited this to work to capture scope data correctly, and added some additional functionality and examples.
+
+I later found [amosborne/rigol-ds1000z](https://github.com/amosborne/rigol-ds1000z/blob/59a952ea1734c51d13fe04a57baaa18e94b51cad/LICENSE) and merged some of the changes from that repo in as well. I included the license attribution in the [AUTHORS.md](AUTHORS.md) file.
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+I wanted to learn more about the scopee and how to control it via Python, so I wrote this library. I hope you find it useful!
+
+My main differences from [amosborne/rigol-ds1000z](https://github.com/amosborne/rigol-ds1000z/blob/59a952ea1734c51d13fe04a57baaa18e94b51cad/LICENSE) are:
+
+- separating optional dependencies in pyproject.toml
+  - optional dependency for pyvisa-py backend to allow TCPIP connections without needing NI-VISA
+  - optional dependency for pyusb and libusb1 to allow USB connections without needing NI-VISA
+  - optional dependency for Termainal User Interface (TUI) using textual
+- using uv and ruff for linting and formatting
+- adding my own examples (as I was learning how to use the library)
 
 # IP Address Setup for Ethernet Connection
 
