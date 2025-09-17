@@ -1,1 +1,1 @@
-from .rigol1000z import *
+from .rigol1000z import *  # noqa: F403

@@ -1,6 +1,6 @@
 # rigol-ds1054z
 
-Python VISA (USB and Ethernet) library to control Rigol DS1000z series oscilloscopes. Continuation of https://github.com/jeanyvesb9/Rigol1000z
+Python VISA (USB and Ethernet) library to control Rigol DS1000z series oscilloscopes. Continuation of https://github.com/jeanyvesb9/Rigol1000z (as of 2025-09-15, that repo is no longer maintained).
 
 # IP Address Setup for Ethernet Connection
 

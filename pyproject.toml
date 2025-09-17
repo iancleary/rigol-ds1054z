@@ -1,19 +1,36 @@
 [project]
-name = "rigol"
+name = "Rigol1000z"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
+description = "Python library for controlling Rigol DS1000Z series oscilloscopes via VISA (Virtual Instrument Software Architecture)."
+readme = {file = "README.md", content-type = "text/markdown"}
+maintainers = [
+  {name = "Ian Cleary", email = "python@iancleary.me"}
+]
+license = {text = "MIT"}
 requires-python = ">=3.13"
 dependencies = [
-    "matplotlib>=3.10.6",
-    "numpy>=2.3.3",
-    "pandas>=2.3.2",
-    "psutil>=7.0.0",
     "pyvisa>=1.15.0",
-    "tqdm>=4.67.1",
 ]
+[project.optional-dependencies]
+openvisa = [
+    "pyvisa-py>=0.8.1",
+]
+full = [
+    "pyvisa-py>=0.8.1",
+    "pyusb>=1.2.1",
+    "libusb1>=1.10.0",
+]
+usb = [
+    "pyusb>=1.2.1",
+    "libusb1>=1.10.0",
+]
+
 
 [dependency-groups]
 dev = [
     "ruff>=0.13.0",
+    "matplotlib>=3.10.6",
+    "numpy>=2.3.3",
+    "pandas>=2.3.2",
+    "pre-commit>=4.3.0",
 ]

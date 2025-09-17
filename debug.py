@@ -1,5 +1,4 @@
 import pyvisa
-import time
 
 rm = pyvisa.ResourceManager()
 
