@@ -40,7 +40,6 @@ class Rigol_DS1054Z:
     """
 
     def __init__(self, visa_resource_string: str = None):
-
         self.visa_resource_string = visa_resource_string
 
         self.ieee = partial(ieee, self)
