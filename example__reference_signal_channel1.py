@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 import time
 
-from Rigol1000z import Oscilloscope as RigolDS1054Z
+from rigol_ds1054z import Oscilloscope as RigolDS1054Z
 
 
 def main():

@@ -1,6 +1,6 @@
 [project]
-name = "Rigol1000z"
-version = "0.1.0"
+name = "rigol-ds1054z"
+version = "0.1.1"
 description = "Python library for controlling Rigol DS1000Z series oscilloscopes via VISA (Virtual Instrument Software Architecture)."
 readme = {file = "README.md", content-type = "text/markdown"}
 maintainers = [
@@ -8,23 +8,28 @@ maintainers = [
 ]
 license = {text = "MIT"}
 requires-python = ">=3.13"
+
+# only hard dependency is the wrapper for the VISA standard wrapper
 dependencies = [
-    "pyvisa>=1.15.0",
-]
-[project.optional-dependencies]
-openvisa = [
-    "pyvisa-py>=0.8.1",
-]
-full = [
-    "pyvisa-py>=0.8.1",
-    "pyusb>=1.3.1",
-    "libusb1>=3.3.1",
-]
-usb = [
-    "pyusb>=1.3.1",
-    "libusb1>=3.3.1",
+    "pyvisa>=1.15.0", # for communicating with instruments via VISA standard
 ]
 
+# https://peps.python.org/pep-0735/
+# covers dependency groups and optional dependencies
+[project.optional-dependencies]
+tcpip = [
+    "pyvisa-py>=0.8.1", # backend for pyvisa to communicate over TCP/IP
+]
+usb = [
+    "pyusb>=1.3.1", # backend for pyvisa to communicate over USB
+]
+serial = [
+    "pyserial>=3.5", # backend for pyvisa to communicate over Serial (RS232)
+]
+tui = [
+    "textual>=6.1.0", # for building terminal user interfaces
+    "rich>=14.1.0", # for rich text and beautiful formatting in the terminal
+]
 
 [dependency-groups]
 dev = [
