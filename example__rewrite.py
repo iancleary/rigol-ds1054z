@@ -49,7 +49,7 @@ def process_waveform(waveform, show=False, filename=None):
 def main():
     print("\n\n\n")
 
-    print("Hello from rigol!")
+    print("Hello from rigol-ds1054z!")
 
     # We are connecting the oscilloscope through USB here.
     # Only one VISA-compatible instrument is connected to our computer,
@@ -69,74 +69,77 @@ def main():
 
     print(f"Connecting to oscilloscope at address {IP_ADDRESS_CONNECT_STRING}")
 
-    osc = Rigol_DS1054Z(visa_resource_string=IP_ADDRESS_CONNECT_STRING)
-    print(osc)
+    with Rigol_DS1054Z(visa_resource_string=IP_ADDRESS_CONNECT_STRING) as oscope:
+        oscope = Rigol_DS1054Z(visa_resource_string=IP_ADDRESS_CONNECT_STRING)
+        print(oscope)
 
-    print("Stopping oscilloscope")
-    osc.stop()
+        print("Stopping oscilloscope")
+        oscope.stop()
 
-    print("Waiting 1 second")
-    time.sleep(1)
+        print("Waiting 1 second")
+        time.sleep(1)
 
-    print("Running oscilloscope")
-    osc.run()
+        print("Running oscilloscope")
+        oscope.run()
 
-    # time.sleep(5)
+        # time.sleep(5)
 
-    # osc.autoscale()
+        # oscope.autoscale()
 
-    # Change voltage range of channel 1 to 50mV/div.
-    # osc[1].set_vertical_scale_V(1000e-3)
-    print("Waiting 2 seconds")
-    time.sleep(2)
+        # Change voltage range of channel 1 to 50mV/div.
+        # oscope[1].set_vertical_scale_V(1000e-3)
+        print("Waiting 2 seconds")
+        time.sleep(2)
 
-    print("Getting waveform from channel 1")
-    channel1 = osc.waveform(source=1, format="ASC")
-    print(channel1)
+        print("Getting waveform from channel 1")
+        channel1 = oscope.waveform(source=1, format="ASC")
+        print(channel1)
 
-    (t, v) = process_waveform(channel1)
+        (t, v) = process_waveform(channel1)
 
-    print(t)
-    print(v)
-    # # Stop the scope.
-    print("Stopping oscilloscope")
-    osc.stop()
+        print(t)
+        print(v)
+        # # Stop the scope.
+        print("Stopping oscilloscope")
+        oscope.stop()
 
-    # # Take a screenshot.
-    # print("Taking screenshot")
-    # osc.get_screenshot("example__rewrite.png", "png")
+        # # Take a screenshot.
+        # print("Taking screenshot")
+        # oscope.get_screenshot("example__rewrite.png", "png")
 
-    # # Create a pandas DataFrame from the data.
-    print("Creating pandas DataFrame and writing to CSV")
-    trace = pd.DataFrame(
-        {"Time (s)": t, "Voltage (V)": v}  # , columns=["Time (s)", "Voltage (V)"]
-    )
-    print(trace)
-    # # trace.plot(x="Time (s)", y="Voltage (V)")
-    print("Writing data to example__rewrite.csv")
-    trace.to_csv("example__rewrite.csv", index=False)
-    pandas_plot = trace.plot(
-        x="Time (s)", y="Voltage (V)", title="Reference Signal from Channel 1 (Pandas)"
-    )
-    pandas_plot.figure.savefig("example__rewrite_pandas_figure.png")
+        # # Create a pandas DataFrame from the data.
+        print("Creating pandas DataFrame and writing to CSV")
+        trace = pd.DataFrame(
+            {"Time (s)": t, "Voltage (V)": v}  # , columns=["Time (s)", "Voltage (V)"]
+        )
+        print(trace)
+        # # trace.plot(x="Time (s)", y="Voltage (V)")
+        print("Writing data to example__rewrite.csv")
+        trace.to_csv("example__rewrite.csv", index=False)
+        pandas_plot = trace.plot(
+            x="Time (s)",
+            y="Voltage (V)",
+            title="Reference Signal from Channel 1 (Pandas)",
+        )
+        pandas_plot.figure.savefig("example__rewrite_pandas_figure.png")
 
-    # # create a plot of the data using matplotlib
-    plt.figure()
+        # # create a plot of the data using matplotlib
+        plt.figure()
 
-    # set the background color to black
-    # https://stackoverflow.com/a/23645437
-    ax = plt.gca()
-    ax.set_facecolor("black")
+        # set the background color to black
+        # https://stackoverflow.com/a/23645437
+        ax = plt.gca()
+        ax.set_facecolor("black")
 
-    plt.plot(t, v, "y")  # yellow line to match Rigol's color scheme for channel 1
-    plt.title("Reference Signal from Channel 1 (Matplotlib)")
-    plt.xlabel("Time (s)")
-    plt.ylabel("Voltage (V)")
-    plt.legend(["Channel 1"])
-    plt.grid()
-    plt.savefig("example__rewrite_matplotlib_figure.png")
+        plt.plot(t, v, "y")  # yellow line to match Rigol's color scheme for channel 1
+        plt.title("Reference Signal from Channel 1 (Matplotlib)")
+        plt.xlabel("Time (s)")
+        plt.ylabel("Voltage (V)")
+        plt.legend(["Channel 1"])
+        plt.grid()
+        plt.savefig("example__rewrite_matplotlib_figure.png")
 
-    print("\n\n\n")
+        print("\n\n\n")
 
 
 if __name__ == "__main__":
