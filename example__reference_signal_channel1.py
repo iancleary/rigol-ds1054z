@@ -112,13 +112,6 @@ def main():
 
     print("\n\n\n")
 
-    # Capture the data sets from channels 1--4 and=
-    # write the data sets to their own file.
-    # for c in range(1,2):
-    #     channel_string = 'channel{c}.dat'
-    #     print(f"Capturing data from channel {c} to file {channel_string}")
-    #     osc[c].get_data('raw', channel_string)
-
 
 if __name__ == "__main__":
     main()
