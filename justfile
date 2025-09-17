@@ -5,6 +5,10 @@ help:
 run:
   uv run example__reference_signal_channel1.py
 
+# run the example script for the rewrite of the module
+rewrite:
+  uv run example__rewrite.py
+
 # run the example script to connect to an instrument via IP using PyVISA
 ip:
   uv run example__pyvisa_connect_via_ip.py

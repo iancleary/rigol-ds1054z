@@ -14,6 +14,7 @@ I wanted to learn more about the scopee and how to control it via Python, so I w
 
 My main differences from [amosborne/rigol-ds1000z](https://github.com/amosborne/rigol-ds1000z/blob/59a952ea1734c51d13fe04a57baaa18e94b51cad/LICENSE) are:
 
+- remove search functionality for VISA resources (you can use pyvisa directly for that, out of scope of this library)
 - loosen main dependencies to just oscope connection optional dependencies in pyproject.toml
   - optional dependency for pyvisa-py backend to allow TCPIP connections without needing NI-VISA
   - optional dependency for pyusb and libusb1 to allow USB connections without needing NI-VISA
