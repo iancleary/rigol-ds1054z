@@ -198,6 +198,12 @@ uv init ligor # rigol in reverse
 cd ligor
 uv add rigol-ds1054z
 # with a backend installed per the above instructions
+#
+# in my case, for a TCP/ip connection
+# without propietary NI-VISA installed
+uv add 'rigol-ds1054z[tcpip]'
+
+# for CSV, Trace Creation, and Plotting
 uv add pandas numpy matplotlib
 # pandas for making the csv file
 # numpy for help making arrays
