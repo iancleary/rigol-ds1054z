@@ -1,6 +1,6 @@
 [project]
 name = "rigol-ds1054z"
-version = "0.2.0"
+version = "0.2.1"
 description = "Python library for controlling Rigol DS1000Z series oscilloscopes via VISA (Virtual Instrument Software Architecture)."
 readme = { file = "README.md", content-type = "text/markdown" }
 maintainers = [{ name = "Ian Cleary", email = "python@iancleary.me" }]
@@ -18,16 +18,20 @@ dependencies = [
 tcpip = [
     "pyvisa-py>=0.8.1", # backend for pyvisa to communicate over TCP/IP
 ]
+# alias ip to tcpip
+ip = [
+    "pyvisa-py>=0.8.1", # backend for pyvisa to communicate over TCP/IP
+]
 usb = [
     "pyusb>=1.3.1", # backend for pyvisa to communicate over USB
 ]
 serial = [
     "pyserial>=3.5", # backend for pyvisa to communicate over Serial (RS232)
 ]
-tui = [
-    "textual>=6.1.0", # for building terminal user interfaces
-    "rich>=14.1.0", # for rich text and beautiful formatting in the terminal
-]
+# tui = [
+#     "textual>=6.1.0", # for building terminal user interfaces
+#     "rich>=14.1.0", # for rich text and beautiful formatting in the terminal
+# ]
 
 [dependency-groups]
 dev = [
