@@ -2,47 +2,85 @@
 
 Python VISA (USB and Ethernet) library to control Rigol DS1000z series oscilloscopes.
 
-First, you must pick a backend installation.
+> First, you must pick a backend installation.
 
+## VISA Backend Installation Instructions
 
-Then you can install whichever is applicable, or multiple:
+Virtual instrument software architecture (VISA) is a widely used application programming interface (API) in the test and measurement (T&M) industry for communicating with instruments from a computer.
+
+For more information, see the wikipedia page on VISA:
+        https://en.wikipedia.org/wiki/Virtual_instrument_software_architecture
+
+This module depends on a VISA (Virtual Instrument Software Architecture) backend.
+
+The `pyvisa` package is a Python wrapper for the VISA (Virtual Instrument Software Architecture) standard.
+
+However, 'pyvisa' does not include a VISA backend itself, as it varies by application/scenario.
+
+Therefore, you need to install a VISA backend separately to use this module.
+
+In order to use this module, you have several options:
+
+### Open Source Backends
+
+#### TCP/IP
 
 ```bash
-# when using National Instruments NI) or Keysight's VISA backend
-uv add rigol-ds1054z
-# or
-pip install rigol-ds1054z
-```
-```bash
-# when using TCP/IP pyvisa-py (pure python) backend
-## This doesnot require a proprietary backend
 uv add 'rigol-ds1054z[tcpip]'
-# or
-pip install 'rigol-ds1054z[tcpip]'
 ```
+    
+Note that `pyvisa-py` only supports TCPIP connections (without other dependecies).
+
+> For more information, visit the [pyvisa-py documentation](https://pyvisa-py.readthedocs.io/en/latest/)
+>
+> There are instructions for installing additional backends to support USB and GPIB connections.
+
+#### USB
+
+Note that `pyusb` package only supports USB connections (without other dependecies).
 
 ```bash
-# when using USB (pyusby) backend
 uv add 'rigol-ds1054z[usb]'
-# or
-pip install 'rigol-ds1054z[usb]'
 ```
 
-```bash
-# when using Serial (pyserial) backend
-uv add 'rigol-ds1054z[serial]'
-# or
-pip install 'rigol-ds1054z[serial]'
-```
+#### Multiple Groups
+
+> If you installed the National Instruments (NI) or Keysight proprietary options, they cover all the backends for you.
+
+At home you might switch between USB and Ethernet or just be learning or want an easy solution (and don't mind extra packages in your environment).
 
 ```bash
-# when using multiple backends (home lab, etc.)
 uv add 'rigol-ds1054z[tcpip,usb]'
-# or
-pip install 'rigol-ds1054z[tcpip,usb]'
 ```
 
-## Authors and License
+### Proprietery Backends 
+
+National Intruments VISA platform for your Operating Systems (OS)
+    
+> This is the a paved road option if you don't mind using closed source software.
+
+For Windows, you can download and install the NI-VISA runtime from:
+
+* https://www.ni.com/en-us/support/downloads/drivers/download.ni-visa.html
+
+For both Linux and MacOS, you can use the same URL as Windows to download the NI-VISA runtime.
+
+In this case, you do not need to install any additional packages.
+
+```bash
+uv add 'rigol-ds1054z'
+```
+
+The NI-VISA platform supports TCPIP, USB, and GPIB connections.
+
+### pyvisa documentation directly 
+
+For more information on installing and using VISA backends, see the [PyVISA documentation directly](https://pyvisa.readthedocs.io/en/latest/).
+
+
+## Authors and License 
+
+> learning from others, license attributions
 
 I first discovered [jeanyvesb9/Rigol1000z](https://github.com/jeanyvesb9/Rigol1000z/tree/9834594d181b6a403af726d37e16468800e4442e) (as of 2025-09-15, that repo is no longer maintained). I edited this to work to capture scope data correctly, and added some additional functionality and examples.
 
@@ -85,7 +123,9 @@ Ensure the RemoteIO setting is enabled on the oscilloscope to allow remote conne
 4. Set "LAN" to "ON".
 5. Restart the oscilloscope to ensure the new settings take effect.
 
-## Example IP Address:
+## Examples
+
+### Test IP Address Connection
 
 ```python
 import pyvisa
@@ -111,7 +151,7 @@ print(f"Success connecting to oscilloscope at IP address {IP_ADDRESS_CONNECT_STR
 
 ```
 
-## Example USB Address:
+### Test USB Address Connection
 
 ```python
 import pyvisa
@@ -145,7 +185,35 @@ print(f"Success connecting to oscilloscope at USB address {USB_ADDRESS_CONNECT_S
 
 ## Example Reference Signal from Channel 1
 
+> This uses an TCP/IP connection.
+>
+> There are comments in the script to help guide you to using a USB connection
+
+If you don't have the probe hooked up to channel 1, modify the script to match your setup.
+
+> In order to run this script you need
+
+```bash
+uv init ligor # rigol in reverse
+cd ligor
+uv add rigol-ds1054z
+# with a backend installed per the above instructions
+uv add pandas numpy matplotlib
+# pandas for making the csv file
+# numpy for help making arrays
+# matplotlib for making a chart, saving it to a png file
+# the rigol-ds1054z library makes the screenshot png directly.
+##  ^ the oscope does it, the library saves it a file.
+
+# copy the below file into main.py
+uv run main.py
+```
+
+Here is the [example__reference_signal_channel1.py](./example__reference_signal_channel1.py) script 
+
 ```python
+# main.py
+
 from rigol_ds1054z import Oscilloscope
 from rigol_ds1054z.utils import process_waveform
 
