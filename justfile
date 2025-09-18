@@ -29,10 +29,15 @@ lint:
 
 # run ruff linter with 
 fix:
-  $ uv run ruff check . --fix
-  
+  uv run ruff check . --fix
+
+# run ruff formatter
 format:
   uv run ruff format .
+
+# run tests with coverage
+test:
+  uv run pytest tests
 
 visa:
   @echo ""

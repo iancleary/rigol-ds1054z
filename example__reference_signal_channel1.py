@@ -1,116 +1,114 @@
-import pyvisa
+from rigol_ds1054z import Oscilloscope
+from rigol_ds1054z.utils import process_waveform
 
 import pandas as pd
 import matplotlib.pyplot as plt
-
-import time
-
-from Rigol1000z import Oscilloscope as RigolDS1054Z
 
 
 def main():
     print("\n\n\n")
 
-    print("Hello from rigol!")
+    print("Hello from rigol-ds1054z!")
 
-    rm = pyvisa.ResourceManager()
+    # this module/library requires you to find this resource string
+    #   this is intentional as a design choice, as the library helps you interface with your scope
+    #   not figure out how you connected to it.
+    #   In general, the USB connection will be slightly faster than TCPIP,
+    #   but TCPIP has a much longer allowed cable length.
+    #   See the README for instructions on how to connect via USB or set a static IP.
+    #   My configuration when writing this is a network switch direct connection (not through my router)
 
-    # We are connecting the oscilloscope through USB here.
-    # Only one VISA-compatible instrument is connected to our computer,
-    # thus the first resource on the list is our oscilloscope.
-    # You can see all connected and available local devices calling
-    #
-    # print(rm.list_resources())
-    # #
-
-    # USB_ADDRESS_CONNECT_STRING = rm.list_resources()[0]
-    # USB_ADDRESS_CONNECT_STRING = "USB0::0x1AB1::0x4CE::DS1Z00000001::INSTR"
-    # print(f"Connecting to oscilloscope at address {USB_ADDRESS_CONNECT_STRING}")
-
-    # IP_ADDRESS = "172.18.8.39"
-    IP_ADDRESS = "169.254.209.1"
+    IP_ADDRESS = "169.254.209.1"  # change me to your IP ADDRESS
     IP_ADDRESS_CONNECT_STRING = f"TCPIP0::{IP_ADDRESS}::INSTR"
 
     print(f"Connecting to oscilloscope at address {IP_ADDRESS_CONNECT_STRING}")
 
-    osc_resource = rm.open_resource(IP_ADDRESS_CONNECT_STRING)
+    # #   USB Example (untested), uncomment this entire block
+    # #   uv add rigol_ds1054z[usb]
+    # #   ...
+    # #   then modify the below line to'
+    # USB_ADDRESS_CONNECT_STRING = rm.list_resources()[0]
+    # import pyvisa
 
-    osc = RigolDS1054Z(osc_resource)
-    print(osc)
+    # rm = pyvisa.ResourceManager()
 
-    print("Stopping oscilloscope")
-    osc.stop()
+    # # We are connecting the oscilloscope through USB here.
 
-    print("Waiting 1 second")
-    time.sleep(1)
+    # USB_ADDRESS_CONNECT_STRING = rm.list_resources()[0]
+    # # Only one VISA-compatible instrument is connected to our computer,
+    # # thus the first resource on the list is our oscilloscope.
+    # # You can see all connected and available local devices calling
+    # print(rm.list_resources())
 
-    print("Running oscilloscope")
-    osc.run()
+    # print(f"Connecting to oscilloscope at address {USB_ADDRESS_CONNECT_STRING}")
 
-    # time.sleep(5)
+    # with Oscilloscope(visa_resource_string=USB_ADDRESS_CONNECT_STRING) as oscope:
 
-    # osc.autoscale()
+    with Oscilloscope(visa_resource_string=IP_ADDRESS_CONNECT_STRING) as oscope:
+        print(oscope)
 
-    # Change voltage range of channel 1 to 50mV/div.
-    # osc[1].set_vertical_scale_V(1000e-3)
-    print("Waiting 2 seconds")
-    time.sleep(2)
+        print("Stopping oscilloscope")
+        oscope.run()
 
-    channel1 = osc[1]
-    print(channel1)
+        # this includes a time.sleep(10)
+        oscope.autoscale()
 
-    # osc.visa_write(":WAV:DATA? CHAN1")
-    # raw_data = osc.visa_read_raw(250000)
-    # data = channel1.parse_waveform_data(raw_data)
-    # print(raw_data)
+        print("Getting waveform from channel 1")
+        channel1 = oscope.waveform(source=1, format="ASC")
+        print(channel1)
 
-    print("\n\n\n")
-    info = channel1.get_data_premable()
-    print(info)
+        # this requires numpy, only when called (not when imported)
+        # if this errors, notice when (during the function call, not the import)
+        # this is to allow numpy to be an optional dependency
+        (t, v) = process_waveform(channel1)
 
-    (t, v) = channel1.get_data(mode="norm")
-    print("Data from channel 1 written to channel1.dat")
-    print(t)
-    print(v)
-    # Stop the scope.
-    print("Stopping oscilloscope")
-    osc.stop()
+        print(t)
+        print(v)
+        # # Stop the scope.
+        print("Stopping oscilloscope")
+        oscope.stop()
 
-    # Take a screenshot.
-    print("Taking screenshot")
-    osc.get_screenshot("example__reference_signal_channel1.png", "png")
+        # # Take a screenshot.
+        # print("Taking screenshot")
+        # oscope.get_screenshot("example__reference_signal_channel1.png", "png")
 
-    # Create a pandas DataFrame from the data.
-    print("Creating pandas DataFrame and writing to CSV")
-    trace = pd.DataFrame(
-        {"Time (s)": t, "Voltage (V)": v}  # , columns=["Time (s)", "Voltage (V)"]
-    )
-    # print(trace)
-    # trace.plot(x="Time (s)", y="Voltage (V)")
-    print("Writing data to example__reference_signal_channel1.csv")
-    trace.to_csv("example__reference_signal_channel1.csv", index=False)
-    pandas_plot = trace.plot(
-        x="Time (s)", y="Voltage (V)", title="Reference Signal from Channel 1 (Pandas)"
-    )
-    pandas_plot.figure.savefig("example__reference_signal_channel1_pandas_figure.png")
+        # # Create a pandas DataFrame from the data.
+        print("Creating pandas DataFrame and writing to CSV")
+        trace = pd.DataFrame(
+            {"Time (s)": t, "Voltage (V)": v}  # , columns=["Time (s)", "Voltage (V)"]
+        )
+        print(trace)
+        # # trace.plot(x="Time (s)", y="Voltage (V)")
+        print("Writing data to example__reference_signal_channel1.csv")
+        trace.to_csv("example__reference_signal_channel1.csv", index=False)
+        pandas_plot = trace.plot(
+            x="Time (s)",
+            y="Voltage (V)",
+            title="Reference Signal from Channel 1 (Pandas)",
+        )
+        pandas_plot.figure.savefig(
+            "example__reference_signal_channel1_pandas_figure.png"
+        )
 
-    # create a plot of the data using matplotlib
-    plt.figure()
+        # # create a plot of the data using matplotlib
+        plt.figure()
 
-    # set the background color to black
-    # https://stackoverflow.com/a/23645437
-    ax = plt.gca()
-    ax.set_facecolor("black")
+        # set the background color to black
+        # https://stackoverflow.com/a/23645437
+        ax = plt.gca()
+        ax.set_facecolor("black")
 
-    plt.plot(t, v, "y")  # yellow line to match Rigol's color scheme for channel 1
-    plt.title("Reference Signal from Channel 1 (Matplotlib)")
-    plt.xlabel("Time (s)")
-    plt.ylabel("Voltage (V)")
-    plt.legend(["Channel 1"])
-    plt.grid()
-    plt.savefig("example__reference_signal_channel1_matplotlib_figure.png")
+        plt.plot(t, v, "y")  # yellow line to match Rigol's color scheme for channel 1
+        plt.title("Reference Signal from Channel 1 (Matplotlib)")
+        plt.xlabel("Time (s)")
+        plt.ylabel("Voltage (V)")
+        plt.legend(["Channel 1"])
+        plt.grid()
+        plt.savefig("example__reference_signal_channel1_matplotlib_figure.png")
 
-    print("\n\n\n")
+        oscope.get_screenshot(filename="example__reference_signal_channel1.png")
+
+        print("\n\n\n")
 
 
 if __name__ == "__main__":
