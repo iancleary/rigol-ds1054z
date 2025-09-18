@@ -1,8 +1,11 @@
 from functools import partial
 import importlib.util
+import os
+import pathlib
+import sys
 from time import sleep
 from typing import Optional
-import sys
+
 
 from pyvisa import ResourceManager
 
@@ -28,9 +31,11 @@ else:
     raise ImportError("pyvisa is required to use this module.")
 
 
-class Rigol_DS1054Z:
+class Oscilloscope:
     """
     A class for communicating with a Rigol DS1000Z series oscilloscope.
+    Tested with a Rigol DS1054Z oscilloscope
+
     This class is compatible with context managers. The functional interfaces
     ``ieee``, ``channel``, ``timebase``, ``display``, ``waveform``, and ``trigger``
     are bound to this object as partial functions.
@@ -128,3 +133,47 @@ class Rigol_DS1054Z:
         """``:TFORce`` Force trigger the oscilloscope, followed by a 1s delay."""
         self.write(":TFOR")
         sleep(1)
+
+    def get_screenshot(self, filename=None, format="png"):
+        """
+        Downloads a screenshot from the oscilloscope.
+
+        Args:
+            filename (str): The path of the image file.  The appropriate
+                extension should be included (i.e. jpg, png, bmp or tif).
+                If you do not, filename = f"{filename}.{format}" is called for you.
+            format (str): The format image that should be downloaded.  Options
+                are 'jpeg, 'png', 'bmp8', 'bmp24' and 'tiff'.  It appears that
+                'jpeg' takes <3sec to download while all the other formats take
+                <0.5sec.  Default is 'png'.
+        """
+
+        # an advantage here is this does not require an external library beyond pyvisa
+
+        assert format in ("jpeg", "png", "bmp8", "bmp24", "tiff")
+
+        # Due to the up to 3s delay, we are setting timeout to None for this operation only
+        old_timeout = self.visa_rsrc.timeout
+        self.visa_rsrc.timeout = None
+
+        # create the image
+        self.write(":disp:data? on,off,%s" % format)
+
+        # read the image data back
+        # these are magic numbers
+        raw_img = self.visa_rsrc.read_raw(3850780)[11:-4]
+
+        # set the timeout back after the operation is done
+        self.visa_rsrc.timeout = old_timeout
+
+        if filename is not None:
+            if not filename.lower().endswith(f".{format}"):
+                filename = f"{filename}.{format}"
+
+            if pathlib.Path(filename).exists():
+                os.remove(filename)
+
+            with open(filename, "wb") as fs:
+                fs.write(raw_img)
+
+        return raw_img
