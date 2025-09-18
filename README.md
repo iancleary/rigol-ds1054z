@@ -2,6 +2,46 @@
 
 Python VISA (USB and Ethernet) library to control Rigol DS1000z series oscilloscopes.
 
+First, you must pick a backend installation.
+
+
+Then you can install whichever is applicable, or multiple:
+
+```bash
+# when using National Instruments NI) or Keysight's VISA backend
+uv add rigol-ds1054z
+# or
+pip install rigol-ds1054z
+```
+```bash
+# when using TCP/IP pyvisa-py (pure python) backend
+## This doesnot require a proprietary backend
+uv add 'rigol-ds1054z[tcpip]'
+# or
+pip install 'rigol-ds1054z[tcpip]'
+```
+
+```bash
+# when using USB (pyusby) backend
+uv add 'rigol-ds1054z[usb]'
+# or
+pip install 'rigol-ds1054z[usb]'
+```
+
+```bash
+# when using Serial (pyserial) backend
+uv add 'rigol-ds1054z[serial]'
+# or
+pip install 'rigol-ds1054z[serial]'
+```
+
+```bash
+# when using multiple backends (home lab, etc.)
+uv add 'rigol-ds1054z[tcpip,usb]'
+# or
+pip install 'rigol-ds1054z[tcpip,usb]'
+```
+
 ## Authors and License
 
 I first discovered [jeanyvesb9/Rigol1000z](https://github.com/jeanyvesb9/Rigol1000z/tree/9834594d181b6a403af726d37e16468800e4442e) (as of 2025-09-15, that repo is no longer maintained). I edited this to work to capture scope data correctly, and added some additional functionality and examples.
@@ -22,7 +62,7 @@ My main differences from [amosborne/rigol-ds1000z](https://github.com/amosborne/
 - using uv and ruff for linting and formatting
 - adding my own examples (as I was learning how to use the library)
 
-# IP Address Setup for Ethernet Connection
+## IP Address Setup for Ethernet Connection
 
 The Rigol DS1054z oscilloscope can be connected via Ethernet using a static IP address. To set up the IP address on the oscilloscope, follow these steps:
 
