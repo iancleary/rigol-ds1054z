@@ -88,7 +88,9 @@ I later found [amosborne/rigol-ds1000z](https://github.com/amosborne/rigol-ds100
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-I wanted to learn more about the scopee and how to control it via Python, so I wrote this library. I hope you find it useful!
+I wanted to learn more about the scope and how to control it via Python, so I wrote this library, continuing the MIT-licensed work of others. 
+
+> I hope you find it useful!
 
 My main differences from [amosborne/rigol-ds1000z](https://github.com/amosborne/rigol-ds1000z/blob/59a952ea1734c51d13fe04a57baaa18e94b51cad/LICENSE) are:
 
