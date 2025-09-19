@@ -9,7 +9,7 @@ Python VISA (USB and Ethernet) library to control Rigol DS1000z series oscillosc
 Virtual instrument software architecture (VISA) is a widely used application programming interface (API) in the test and measurement (T&M) industry for communicating with instruments from a computer.
 
 For more information, see the wikipedia page on VISA:
-        https://en.wikipedia.org/wiki/Virtual_instrument_software_architecture
+https://en.wikipedia.org/wiki/Virtual_instrument_software_architecture
 
 This module depends on a VISA (Virtual Instrument Software Architecture) backend.
 
@@ -28,7 +28,7 @@ In order to use this module, you have several options:
 ```bash
 uv add 'rigol-ds1054z[tcpip]'
 ```
-    
+
 Note that `pyvisa-py` only supports TCPIP connections (without other dependecies).
 
 > For more information, visit the [pyvisa-py documentation](https://pyvisa-py.readthedocs.io/en/latest/)
@@ -53,15 +53,15 @@ At home you might switch between USB and Ethernet or just be learning or want an
 uv add 'rigol-ds1054z[tcpip,usb]'
 ```
 
-### Proprietery Backends 
+### Proprietery Backends
 
 National Intruments VISA platform for your Operating Systems (OS)
-    
+
 > This is the a paved road option if you don't mind using closed source software.
 
 For Windows, you can download and install the NI-VISA runtime from:
 
-* https://www.ni.com/en-us/support/downloads/drivers/download.ni-visa.html
+- https://www.ni.com/en-us/support/downloads/drivers/download.ni-visa.html
 
 For both Linux and MacOS, you can use the same URL as Windows to download the NI-VISA runtime.
 
@@ -73,12 +73,11 @@ uv add 'rigol-ds1054z'
 
 The NI-VISA platform supports TCPIP, USB, and GPIB connections.
 
-### pyvisa documentation directly 
+### pyvisa documentation directly
 
 For more information on installing and using VISA backends, see the [PyVISA documentation directly](https://pyvisa.readthedocs.io/en/latest/).
 
-
-## Authors and License 
+## Authors and License
 
 > learning from others, license attributions
 
@@ -88,7 +87,7 @@ I later found [amosborne/rigol-ds1000z](https://github.com/amosborne/rigol-ds100
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-I wanted to learn more about the scope and how to control it via Python, so I wrote this library, continuing the MIT-licensed work of others. 
+I wanted to learn more about the scope and how to control it via Python, so I wrote this library, continuing the MIT-licensed work of others.
 
 > I hope you find it useful!
 
@@ -217,7 +216,11 @@ uv add pandas numpy matplotlib
 uv run main.py
 ```
 
-Here is the [example__reference_signal_channel1.py](./example__reference_signal_channel1.py) script 
+Here is the [example\_\_reference_signal_channel1.py](./example__reference_signal_channel1.py) script
+
+> Don't have both the USB and Ethernet cables plugged in at the same time, you might have issues.
+> I had the USB interface work fine, but the TCP/IP connection timeout out.
+> If I removed the USB connection, the ethernet TCP/IP connection worked as expected.
 
 ```python
 # main.py
@@ -242,8 +245,7 @@ def main():
     #   See the README for instructions on how to connect via USB or set a static IP.
     #   My configuration when writing this is a network switch direct connection (not through my router)
 
-    # IP_ADDRESS = "172.18.8.39"
-    IP_ADDRESS = "169.254.209.1"
+    IP_ADDRESS = "169.254.209.1"  # change me to your address
     IP_ADDRESS_CONNECT_STRING = f"TCPIP0::{IP_ADDRESS}::INSTR"
 
     print(f"Connecting to oscilloscope at address {IP_ADDRESS_CONNECT_STRING}")
