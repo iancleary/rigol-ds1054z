@@ -38,7 +38,6 @@ def main():
     print(f"Connecting to oscilloscope at address {USB_ADDRESS_CONNECT_STRING}")
 
     with Oscilloscope(visa_resource_string=USB_ADDRESS_CONNECT_STRING) as oscope:
-
         print(oscope)
 
         print("Running oscilloscope")
