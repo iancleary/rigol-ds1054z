@@ -1,6 +1,8 @@
 from rigol_ds1054z import Oscilloscope
 from rigol_ds1054z.utils import process_waveform
 
+import pyvisa
+
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -18,39 +20,32 @@ def main():
     #   See the README for instructions on how to connect via USB or set a static IP.
     #   My configuration when writing this is a network switch direct connection (not through my router)
 
-    IP_ADDRESS = "169.254.209.1"  # change me to your IP ADDRESS
-    IP_ADDRESS_CONNECT_STRING = f"TCPIP0::{IP_ADDRESS}::INSTR"
+    #   USB Example (untested), uncomment this entire block
+    #   uv add rigol_ds1054z[usb]
+    #   ...
+    #   then modify the below line to'
 
-    print(f"Connecting to oscilloscope at address {IP_ADDRESS_CONNECT_STRING}")
+    rm = pyvisa.ResourceManager()
 
-    # #   USB Example (untested), uncomment this entire block
-    # #   uv add rigol_ds1054z[usb]
-    # #   ...
-    # #   then modify the below line to'
-    # USB_ADDRESS_CONNECT_STRING = rm.list_resources()[0]
-    # import pyvisa
+    # We are connecting the oscilloscope through USB here.
 
-    # rm = pyvisa.ResourceManager()
+    USB_ADDRESS_CONNECT_STRING = rm.list_resources()[0]
+    # Only one VISA-compatible instrument is connected to our computer,
+    # thus the first resource on the list is our oscilloscope.
+    # You can see all connected and available local devices calling
+    print(rm.list_resources())
 
-    # # We are connecting the oscilloscope through USB here.
+    print(f"Connecting to oscilloscope at address {USB_ADDRESS_CONNECT_STRING}")
 
-    # USB_ADDRESS_CONNECT_STRING = rm.list_resources()[0]
-    # # Only one VISA-compatible instrument is connected to our computer,
-    # # thus the first resource on the list is our oscilloscope.
-    # # You can see all connected and available local devices calling
-    # print(rm.list_resources())
+    with Oscilloscope(visa_resource_string=USB_ADDRESS_CONNECT_STRING) as oscope:
 
-    # print(f"Connecting to oscilloscope at address {USB_ADDRESS_CONNECT_STRING}")
-
-    # with Oscilloscope(visa_resource_string=USB_ADDRESS_CONNECT_STRING) as oscope:
-
-    with Oscilloscope(visa_resource_string=IP_ADDRESS_CONNECT_STRING) as oscope:
         print(oscope)
 
-        print("Stopping oscilloscope")
+        print("Running oscilloscope")
         oscope.run()
 
-        # this includes a time.sleep(10)
+        print("Autoscale oscilloscope")
+        # this includes a time.sleep(10)'
         oscope.autoscale()
 
         print("Getting waveform from channel 1")

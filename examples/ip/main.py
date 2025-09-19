@@ -23,34 +23,14 @@ def main():
 
     print(f"Connecting to oscilloscope at address {IP_ADDRESS_CONNECT_STRING}")
 
-    # #   USB Example (untested), uncomment this entire block
-    # #   uv add rigol_ds1054z[usb]
-    # #   ...
-    # #   then modify the below line to'
-    # USB_ADDRESS_CONNECT_STRING = rm.list_resources()[0]
-    # import pyvisa
-
-    # rm = pyvisa.ResourceManager()
-
-    # # We are connecting the oscilloscope through USB here.
-
-    # USB_ADDRESS_CONNECT_STRING = rm.list_resources()[0]
-    # # Only one VISA-compatible instrument is connected to our computer,
-    # # thus the first resource on the list is our oscilloscope.
-    # # You can see all connected and available local devices calling
-    # print(rm.list_resources())
-
-    # print(f"Connecting to oscilloscope at address {USB_ADDRESS_CONNECT_STRING}")
-
-    # with Oscilloscope(visa_resource_string=USB_ADDRESS_CONNECT_STRING) as oscope:
-
     with Oscilloscope(visa_resource_string=IP_ADDRESS_CONNECT_STRING) as oscope:
         print(oscope)
 
-        print("Stopping oscilloscope")
+        print("Running oscilloscope")
         oscope.run()
 
-        # this includes a time.sleep(10)
+        print("Autoscale oscilloscope")
+        # this includes a time.sleep(10)'
         oscope.autoscale()
 
         print("Getting waveform from channel 1")
