@@ -18,7 +18,7 @@ def main():
     #   See the README for instructions on how to connect via USB or set a static IP.
     #   My configuration when writing this is a network switch direct connection (not through my router)
 
-    IP_ADDRESS = "169.254.209.1"  # change me to your IP ADDRESS
+    IP_ADDRESS = "169.254.209.1"  # change me to your address
     IP_ADDRESS_CONNECT_STRING = f"TCPIP0::{IP_ADDRESS}::INSTR"
 
     print(f"Connecting to oscilloscope at address {IP_ADDRESS_CONNECT_STRING}")
