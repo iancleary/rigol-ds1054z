@@ -97,7 +97,6 @@ My main differences from [amosborne/rigol-ds1000z](https://github.com/amosborne/
 - loosen main dependencies to just oscope connection optional dependencies in pyproject.toml
   - optional dependency for pyvisa-py backend to allow TCPIP connections without needing NI-VISA
   - optional dependency for pyusb and libusb1 to allow USB connections without needing NI-VISA
-  - optional dependency for Termainal User Interface (TUI) using textual
 - using uv and ruff for linting and formatting
 - adding my own examples (as I was learning how to use the library)
 
