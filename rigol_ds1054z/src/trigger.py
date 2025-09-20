@@ -12,6 +12,7 @@ TRIGGER = namedtuple(
 def trigger(
     oscope,
     sweep: Optional[str] = None,
+    sweep_sleep_duration: Optional[float] = 1,
     noisereject: Optional[bool] = None,
     mode: Optional[str] = None,
     holdoff: Optional[float] = None,
@@ -43,7 +44,7 @@ def trigger(
     """
     if sweep is not None:
         oscope.write(":TRIG:SWE {:s}".format(sweep))
-        sleep(1)
+        sleep(sweep_sleep_duration)
 
     if noisereject is not None:
         oscope.write(":TRIG:NREJ {:d}".format(noisereject))
