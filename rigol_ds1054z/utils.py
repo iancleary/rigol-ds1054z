@@ -29,7 +29,7 @@ def process_waveform(waveform: WAVEFORM):
         pass  # no debug print needed, they know its there by the lack of this message
     else:
         print(f"can't find the {NUMPY!r} module, raising ImportError")
-        raise ImportError("pyvisa is required to use this module.")
+        raise ImportError("numpy is required to use this module.")
 
     if waveform.format == "ASC":
         ydata = np.array(waveform.data[11:].split(","), dtype=float)
