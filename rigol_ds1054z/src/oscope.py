@@ -104,35 +104,35 @@ class Oscilloscope:
         """
         return self.visa_rsrc.query(cmd + ";*WAI", delay).strip()
 
-    def autoscale(self):
+    def autoscale(self, sleep_duration: float = 10):
         """``:AUToscale`` Autoscale the oscilloscope, followed by a 10s delay."""
         self.write(":AUT")
-        sleep(10)
+        sleep(sleep_duration)
 
-    def clear(self):
+    def clear(self, sleep_duration: float = 1):
         """``:CLEar`` Clear the oscilloscope display, followed by a 1s delay."""
         self.write(":CLE")
-        sleep(1)
+        sleep(sleep_duration)
 
-    def run(self):
+    def run(self, sleep_duration: float = 1):
         """``:RUN`` Run the oscilloscope, followed by a 1s delay."""
         self.write(":RUN")
-        sleep(1)
+        sleep(sleep_duration)
 
-    def stop(self):
+    def stop(self, sleep_duration: float = 1):
         """``:STOP`` Stop the oscilloscope, followed by a 1s delay."""
         self.write(":STOP")
-        sleep(1)
+        sleep(sleep_duration)
 
-    def single(self):
+    def single(self, sleep_duration: float = 1):
         """``:SINGle`` Single trigger the oscilloscope, followed by a 1s delay."""
         self.write(":SING")
-        sleep(1)
+        sleep(sleep_duration)
 
-    def tforce(self):
+    def tforce(self, sleep_duration: float = 1):
         """``:TFORce`` Force trigger the oscilloscope, followed by a 1s delay."""
         self.write(":TFOR")
-        sleep(1)
+        sleep(sleep_duration)
 
     def get_screenshot(self, filename=None, format="png"):
         """

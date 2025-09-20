@@ -12,6 +12,7 @@ def ieee(
     esr: bool = False,
     opc: bool = False,
     rst: bool = False,
+    rst_sleep_duration: float = 5,
     sre: Optional[int] = None,
     stb: bool = False,
     tst: bool = False,
@@ -46,7 +47,7 @@ def ieee(
 
     if rst:
         oscope.write("*RST")
-        sleep(5)
+        sleep(rst_sleep_duration)
 
     if sre is not None:
         oscope.write("*SRE {:d}".format(sre))
