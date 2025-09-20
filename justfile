@@ -1,10 +1,6 @@
 help:
   just --list
 
-# run the example script to get a reference signal from a Rigol DS1054X oscilloscope and save it to CSV and PNG files
-run:
-  uv run example__reference_signal_channel1.py
-
 # run the example script to connect to an instrument via IP using PyVISA
 ip:
   cd examples/ip && uv run main.py
