@@ -7,11 +7,18 @@ run:
 
 # run the example script to connect to an instrument via IP using PyVISA
 ip:
-  uv run example__pyvisa_connect_via_ip.py
+  cd examples/ip && uv run main.py
 
 # run the example script to connect to an instrument via USB using PyVISA
 usb:
-  uv run example__reference_signal_channel1.py
+  cd examples/usb && uv run main.py
+
+# install package locally
+dev:
+  uv sync
+  uv pip install '.[ip,usb]'
+  uv pip list
+  uv lock
 
 # install the module's dependencies
 install:
